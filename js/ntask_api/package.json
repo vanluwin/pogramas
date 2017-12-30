@@ -1,0 +1,23 @@
+{
+  "name": "ntask_api",
+  "version": "1.0.0",
+  "description": "API de gestao de tarefas",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel-node index.js --presets es2015,stage-2"
+  },
+  "author": "Richardson Santiago",
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "consign": "^0.1.6",
+    "express": "^4.16.2",
+    "sequelize": "^4.22.5",
+    "sqlite3": "^3.1.13"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1"
+  }
+}
