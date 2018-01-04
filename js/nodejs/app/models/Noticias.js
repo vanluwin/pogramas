@@ -15,7 +15,8 @@ function Noticias(connection){
     };
 
     this.salvarNoticia = (noticia, callback) => {
-
+        //console.log(noticia);
+        
         this._connection.query('insert into noticias set ?', noticia, callback);
 
     };
