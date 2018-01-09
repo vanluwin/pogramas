@@ -22,8 +22,13 @@ module.exports.cadastrar = (application, req, res) => {
 
     const connection = application.config.db;
     const Usuarios = new application.app.models.Usuarios(connection);
+    const Jogo = new application.app.models.Jogo(connection);
 
     Usuarios.insertUser(dados);
 
-    res.send('Hear me Roar');
+    // Gerar Parametros
+    Jogo.generateParms(dados.user);    
+
+
+    res.render('cadastro_sucesso');
 }
