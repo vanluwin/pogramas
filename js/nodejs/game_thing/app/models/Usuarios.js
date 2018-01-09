@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 function Usuarios(connection) {
 
     this._connection = connection();
@@ -6,6 +8,9 @@ function Usuarios(connection) {
 
         this._connection.open((err, mongoClient) => {
             mongoClient.collection("usuarios", (err, collection) => {
+
+                user.pass = crypto.createHash('md5').update(user.pass).digest('hex'); 
+                
                 collection.insert(user);
 
                 mongoClient.close();
@@ -18,6 +23,9 @@ function Usuarios(connection) {
     this.autenticar = (user, req, res) => {
         this._connection.open((err, mongoClient) => {
             mongoClient.collection("usuarios", (err, collection) => {
+                
+                user.pass = crypto.createHash('md5').update(user.pass).digest('hex'); 
+
                 collection.find(user).toArray((err, result) => {
 
                     if (result[0]) {
@@ -32,9 +40,7 @@ function Usuarios(connection) {
                     } else {
                         res.render('index', {
                             validacao: [{
-                                param: 'auth',
-                                msg: 'usuário e ousenha inválidos',
-                                value: ''
+                                msg: 'usuário e ou senha inválidos'
                             }]
                         });
                     }
