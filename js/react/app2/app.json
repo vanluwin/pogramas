@@ -1,5 +1,11 @@
 {
   "expo": {
-    "sdkVersion": "23.0.0"
+    	"name": "Fortune",
+	"icon": "./imgs/logo.png",
+	"version": "1.0.0",
+    	"sdkVersion": "23.0.0",
+	"android": {
+      		"package": "com.richardInc.fortune"
+    	}
   }
 }

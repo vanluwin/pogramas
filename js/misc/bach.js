@@ -52,7 +52,7 @@ class Programador extends Funcionario {
 
 const a = new Funcionario(1000);
 const b = new Programador(1000);
-
+/*
 console.log('Funcionario: ');
 a.calcularSalario();
 a.exibirSalario();
@@ -60,3 +60,11 @@ a.exibirSalario();
 console.log('Programador: ');
 b.calcularSalario()
 b.exibirSalario();
+*/
+// ------------------------------------------
+
+var nostra = require('nostra');
+
+var fortune = nostra.generate();
+
+console.log(fortune);

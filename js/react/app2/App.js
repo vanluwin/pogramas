@@ -1,25 +1,49 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text, View, Button } from 'react-native';
-
-// Criar e exportar o compoente
-export default class Texto extends Component {
-  render() {
-    return (
-      <View>
-        <Text style={ Estilos.estiloTexto } >Frases do dia</Text>
-      </View>
-    )
-  }
-};
+import { AppRegistry, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
+import nostra from 'nostra';
 
 //Formatações
 const Estilos = {
-  estiloTexto: {
-    fontSize: 30,
-    backgroundColor: '#1B9CF2',
-    padding: 50
+  principal:{
+    flex: 1,
+    justifyContent: 'center',   
+    alignItems: 'center'
+  }, 
+  botao: {
+    backgroundColor: '#69D2E7',
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    marginTop: 20,
+    borderRadius: 10
+  }, 
+  textoBotao: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold'
+  }
+  
+};
+
+const click = () => {
+  Alert.alert(
+    'Fortune', 
+    nostra.generate()
+  );
+};
+
+// Criar e exportar o compoente
+class Texto extends Component {
+  render() {
+    const { principal, botao, textoBotao} = Estilos;
+    return (
+      <View style={ principal }>
+        <Image source={ require('./imgs/logo.png') } style={{width: 300, height: 250}} />
+        <TouchableOpacity style={ botao } onPress={click}>
+          <Text style={ textoBotao }>Fortune</Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
 };
 
-
-
+export default Texto;
