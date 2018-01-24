@@ -3,7 +3,8 @@ import {
   StyleSheet,
   StatusBar,
   View,
-  Image
+  Image,
+  TouchableHighlight
 } from 'react-native';
 
 import BarraNav from './BarraNav';
@@ -23,7 +24,7 @@ export default class CenaP extends Component {
             backgroundColor = '#9fa2a8'
         />
 
-        <BarraNav/>
+        <BarraNav color='#9fa2a8'/>
 
         <View style={styles.logo}>
             <Image source={logo} />
@@ -32,13 +33,47 @@ export default class CenaP extends Component {
         <View style={styles.menus}>
 
             <View style={styles.btns}>
-                <Image style={styles.btn} source={menuCliente} />
-                <Image style={styles.btn} source={menuContato} />
+                <TouchableHighlight
+                    underlayColor={'#B9C941'}
+                    activeOpacity={0.3}
+                    onPress={() => {
+                     this.props.navigator.push({ id: 'b' });   
+                    }}
+                >
+                    <Image style={styles.btn} source={menuCliente} />
+                </TouchableHighlight>
+                
+                <TouchableHighlight
+                    underlayColor={'#61BD8C'}
+                    activeOpacity={0.3}
+                    onPress={() => {
+                     this.props.navigator.push({ id: 'c' });   
+                    }}
+                >
+                    <Image style={styles.btn} source={menuContato} />
+                </TouchableHighlight>
             </View>
 
             <View style={styles.btns}>
-                <Image style={styles.btn} source={menuEmpresa} />
-                <Image style={styles.btn} source={menuServico} />
+                <TouchableHighlight
+                    underlayColor={'#EC7148'}
+                    activeOpacity={0.3}
+                    onPress={() => {
+                     this.props.navigator.push({ id: 'd' });   
+                    }}
+                >
+                    <Image style={styles.btn} source={menuEmpresa} />
+                </TouchableHighlight>
+
+                <TouchableHighlight
+                    underlayColor={'#19D1C8'}
+                    activeOpacity={0.3}
+                    onPress={() => {
+                     this.props.navigator.push({ id: 'e' });   
+                    }}
+                >
+                    <Image style={styles.btn} source={menuServico} />
+                </TouchableHighlight>
             </View>
           
         </View>  

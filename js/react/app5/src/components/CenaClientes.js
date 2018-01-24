@@ -16,13 +16,13 @@ const cliente2 = require('../../imgs/cliente2.png');
 export default class CenaC extends Component {
   render() {
     return (
-        <View>
+        <View style={{ flex: 1, backgroundColor: '#FFF'}}>
         <StatusBar 
-            // hidden 
-            backgroundColor = '#9fa2a8'
+          // hidden 
+          backgroundColor = '#B9C941'
         />
 
-        <BarraNav/>
+        <BarraNav voltar navigator={this.props.navigator} color='#B9C941' />
 
         <View style={styles.header}>
           <Image source={detalhe} />
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   txtH: {
-    color: '#b9c941',
+    color: '#B9C941',
     fontSize: 30,
     fontWeight: 'bold',
     marginLeft: 25,
