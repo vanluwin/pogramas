@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>True Facts</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>True Facts</h1>
+
+        <ul>
+            <% for(let i in facts){ %>
+                <li><%= facts[i] %></li>        
+            <% } %>
+        </ul>
+    </body>
+</html>
