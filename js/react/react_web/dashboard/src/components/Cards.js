@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
-import { Button, IconButton, Typography, TextField, Switch, FormControlLabel, FormControl, InputLabel, Select, Input, Dialog, DialogTitle, DialogContent, MenuItem, DialogActions } from 'material-ui';
+import { Button, IconButton, Typography, TextField, Switch, FormControlLabel, FormControl, FormGroup, InputLabel, Select, Input, Dialog, DialogTitle, DialogContent, MenuItem, DialogActions } from 'material-ui';
 
 import { VisibilityOff, Send } from 'material-ui-icons';
 
@@ -16,8 +16,30 @@ const styles = ({
     }
 });
   
-
 class ChatCard extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            msg: ''
+        }
+    }
+
+    handleMsg = name => event => {
+        this.setState({ [name]: event.target.value });      
+    };
+
+    handleSend = () => {
+        if(this.state.msg.length > 0){
+            console.log(this.state.msg);
+            this.setState({msg: ''})
+        }
+    };
+
+    handleHide = event => {
+      console.log(event.target);      
+    };
+
     render() {
         return(
             <Card>
@@ -25,7 +47,7 @@ class ChatCard extends Component {
                     title="Chat" 
                     action={
                         <IconButton>
-                            <VisibilityOff />
+                            <VisibilityOff onClick={this.handleHide} />
                         </IconButton>
                     }
                 />
@@ -34,8 +56,10 @@ class ChatCard extends Component {
                         <TextField
                             id="msg"
                             label="Insira uma mensagem"
+                            value={this.state.msg}
+                            onChange={this.handleMsg('msg')}
                         />
-                        <Button variant="raised" size="small" color="secondary" style={{marginLeft: 10}}>
+                        <Button onClick={this.handleSend} variant="raised" size="small" color="secondary" style={{marginLeft: 10}}>
                             Send
                             <Send/>
                         </Button>
@@ -52,23 +76,51 @@ class ChatCard extends Component {
     }
 }
 
-class AddBtn extends React.Component {
-    state = {
-      open: false,
-      pin: '',
+class AddBtn extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            open: false,
+            btn_pin: '',
+            btn_name: '',
+            btn_state: false
+        };
+        
+    }    
+
+    handleChange = name => event => {    
+        this.setState({ [name]: event.target.value });
     };
-  
-    handleChange = name => event => {
-      this.setState({ [name]: Number(event.target.value) });
+
+    handleState = name => event => {        
+        this.setState({ [name]: event.target.checked });
     };
-  
+
     handleClickOpen = () => {
       this.setState({ open: true });
     };
   
     handleClose = () => {
-      this.setState({ open: false });
+        this.setState({ open: false });
     };
+
+    createBtn = () => {
+
+        this.props.callback({
+            name: this.state.btn_name,
+            pin: this.state.btn_pin,
+            state: this.state.btn_state
+        });
+        
+        this.setState({
+            open: false,  
+            btn_pin: '',
+            btn_name: '',
+            btn_state: false
+            
+        });
+    }
   
     render() {  
       return (
@@ -89,14 +141,17 @@ class AddBtn extends React.Component {
                     <form style={styles.root}>
                         <FormControl style={styles.formControl}>
                             <InputLabel>Rótulo</InputLabel>
-                            <Input id="btn_name" />
+                            <Input 
+                                id="btn_name" 
+                                onChange={this.handleChange('btn_name')}
+                            />
                         </FormControl>
 
                         <FormControl style={styles.formControl}>
                             <InputLabel>Pino</InputLabel>
                             <Select
-                                value={this.state.pin}
-                                onChange={this.handleChange('pin')}
+                                value={this.state.btn_pin}
+                                onChange={this.handleChange('btn_pin')}
                                 input={<Input id="btn_pin" />}
                             >
                                 <MenuItem value="">
@@ -111,8 +166,10 @@ class AddBtn extends React.Component {
                         <FormControlLabel
                             control={
                                 <Switch
-                                    value="state"
+                                    value="btn_state"
                                     color="secondary"
+                                    checked={this.state.btn_state}
+                                    onChange={this.handleState('btn_state')}
                                 />
                             }
                             label="Estado"
@@ -126,7 +183,7 @@ class AddBtn extends React.Component {
                         Cancel
                     </Button>
 
-                    <Button onClick={this.handleClose} color="primary">
+                    <Button onClick={this.createBtn} color="primary">
                         Ok
                     </Button>
                 </DialogActions>
@@ -135,9 +192,113 @@ class AddBtn extends React.Component {
       );
     }
 }
-  
 
+class EditBtn extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            open: false,
+            btn: ''
+        };
+        
+    }  
+
+    handleClickOpen = () => {
+        this.setState({ open: true });
+    };
+
+    handleClose = () => {
+        this.setState({ open: false });
+    };
+
+    handleState = name => event => {        
+        this.setState({ [name]: event.target.checked });
+    };
+
+    handleChange = name => event => {   
+        let btn = this.props.btns[event.target.value];
+        this.setState({ [name]: btn.name }, _ => console.log(this.state));
+
+        
+    };
+
+    render() {
+        return(
+            <div>
+                <Button variant='raised' size="medium" color="primary" style={{margin: 5}} onClick={this.handleClickOpen}>
+                    Edit
+                </Button>
+
+                <Dialog
+                    disableBackdropClick
+                    disableEscapeKeyDown
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                >
+                    <DialogTitle>Editar botão</DialogTitle>
+
+                    <DialogContent>
+                        <form style={styles.root}>
+                            <FormControl style={styles.formControl}>
+                                <InputLabel>Botão</InputLabel>
+                                <Select
+                                    value={this.state.btn}
+                                    onChange={this.handleChange('btn')}
+                                    input={<Input id="editar_btn" />}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {this.props.btns.map( btn => {
+                                        return(
+                                            <MenuItem key={btn.key} value={btn.key}>{btn.name}</MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                            </FormControl> 
+                        </form>
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                            Cancel
+                        </Button>
+
+                        <Button onClick={this.handleClose} color="primary">
+                            Ok
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
+    }
+}
+  
 class KeyboardCard extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            btns: []
+        }
+    }
+
+    insertBtn = btn => {
+        let updateBtns = this.state.btns.slice();
+        updateBtns.push({key: updateBtns.length, ...btn});
+
+        this.setState({ btns: updateBtns });
+    };
+
+    handleKetboardSwitch = btn => {
+        let updateBtns = this.state.btns.slice();
+        updateBtns[btn.key] = {...btn, state: !btn.state};
+
+        this.setState({ btns: updateBtns });
+       
+    };
+
     render() {
         return(
             <Card>
@@ -151,14 +312,30 @@ class KeyboardCard extends Component {
                 />
                 
                 <CardContent>
-                    
+                    <FormControl component="fieldset">
+                        <FormGroup>
+                            {this.state.btns.map( btn => {
+                                return(
+                                    <FormControlLabel
+                                        key={btn.key}
+                                        control={
+                                        <Switch
+                                            checked={btn.state}
+                                            pin={btn.pin}
+                                            onChange={() => this.handleKetboardSwitch(btn) }
+                                        />
+                                        }
+                                        label={btn.name}
+                                        />
+                                );
+                            })}
+                        </FormGroup>
+                    </FormControl>
                 </CardContent>
 
                 <CardActions>
-                    <Button variant='raised' size="medium" color="primary">
-                        Edit
-                    </Button>
-                    <AddBtn />
+                    <EditBtn btns={this.state.btns}/>
+                    <AddBtn callback={this.insertBtn}/>
                 </CardActions>
 
             </Card>
