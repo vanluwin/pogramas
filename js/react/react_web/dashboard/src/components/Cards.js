@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
-import { Button, IconButton, Typography, TextField, Switch, FormControlLabel, FormControl, FormGroup, InputLabel, Select, Input, Dialog, DialogTitle, DialogContent, MenuItem, DialogActions } from 'material-ui';
+import { Button, IconButton, Typography, TextField, Switch, FormControlLabel, FormControl, FormGroup, InputLabel, Select, Input, Dialog, DialogTitle, DialogContent, MenuItem, DialogActions, Grid } from 'material-ui';
 
 import { VisibilityOff, Send } from 'material-ui-icons';
 
@@ -21,6 +21,7 @@ class ChatCard extends Component {
         super(props);
 
         this.state = {
+            show: this.props.view,
             msg: ''
         }
     }
@@ -36,42 +37,54 @@ class ChatCard extends Component {
         }
     };
 
-    handleHide = event => {
-      console.log(event.target);      
+    handleHide = card => {
+        let update = !this.state.show;
+        this.setState({ show: update }); 
+        this.props.callback(card);
     };
 
+    componentWillReceiveProps(update) {  
+        let show = update.show;             
+        this.setState({ show });      
+    }
+
     render() {
+        if(!this.state.show){
+            return null;
+        }
         return(
-            <Card>
-                <CardHeader 
-                    title="Chat" 
-                    action={
-                        <IconButton>
-                            <VisibilityOff onClick={this.handleHide} />
-                        </IconButton>
-                    }
-                />
-                <CardContent>
-                    <form>
-                        <TextField
-                            id="msg"
-                            label="Insira uma mensagem"
-                            value={this.state.msg}
-                            onChange={this.handleMsg('msg')}
-                        />
-                        <Button onClick={this.handleSend} variant="raised" size="small" color="secondary" style={{marginLeft: 10}}>
-                            Send
-                            <Send/>
+            <Grid item xs={4}>
+                <Card>
+                    <CardHeader 
+                        title="Chat" 
+                        action={
+                            <IconButton>
+                                <VisibilityOff onClick={() => this.handleHide('chat')} />
+                            </IconButton>
+                        }
+                    />
+                    <CardContent>
+                        <form>
+                            <TextField
+                                id="msg"
+                                label="Insira uma mensagem"
+                                value={this.state.msg}
+                                onChange={this.handleMsg('msg')}
+                            />
+                            <Button onClick={this.handleSend} variant="raised" size="small" color="secondary" style={{marginLeft: 10}}>
+                                Send
+                                <Send/>
+                            </Button>
+                        </form>
+                    </CardContent>
+                    
+                    <CardActions>
+                        <Button variant='raised' size="medium" color="primary">
+                            Action
                         </Button>
-                    </form>
-                </CardContent>
-                
-                <CardActions>
-                    <Button variant='raised' size="medium" color="primary">
-                        Action
-                    </Button>
-                </CardActions>
-            </Card>
+                    </CardActions>
+                </Card>
+            </Grid>
         );
     }
 }
@@ -199,6 +212,7 @@ class EditBtn extends Component {
 
         this.state = {
             open: false,
+            label: '',
             btn: ''
         };
         
@@ -209,21 +223,91 @@ class EditBtn extends Component {
     };
 
     handleClose = () => {
-        this.setState({ open: false });
+        this.setState({
+            open: false,
+            btn_name: '',
+            btn: ''
+        });
     };
 
     handleState = name => event => {        
         this.setState({ [name]: event.target.checked });
     };
 
-    handleChange = name => event => {   
+    handleChange = name => event => {         
         let btn = this.props.btns[event.target.value];
-        this.setState({ [name]: btn.name }, _ => console.log(this.state));
 
-        
+        this.setState({ btn });       
+        this.setState({ [name]: btn.name });
     };
 
-    render() {
+    handleEdit = name => event => {
+        let update = this.state.btn;
+        if(name === 'state'){
+            update[name] = event.target.checked;
+        }else {
+            update[name] = event.target.value;
+        }
+        
+        this.setState({ btn: update});
+         
+    };
+
+    handleUpdate = () => {
+        this.props.callback(this.state.btn);
+
+        this.setState({
+            open: false,
+            btn_name: '',
+            btn: ''
+        })
+    }
+
+    editForm(btn) {
+        return(
+            <form style={styles.root}>
+                <FormControl style={styles.formControl}>
+                    <InputLabel>Rótulo</InputLabel>
+                    <Input 
+                        value={btn.name}
+                        id="btn_name" 
+                        onChange={this.handleEdit('name')}
+                    />
+                </FormControl>
+
+                <FormControl style={styles.formControl}>
+                    <InputLabel>Pino</InputLabel>
+                    <Select
+                        value={btn.pin}
+                        onChange={this.handleEdit('pin')}
+                        input={<Input id="btn_pin" />}
+                    >
+                        <MenuItem value="">
+                            <em>None</em>
+                        </MenuItem>
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={3}>3</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControlLabel
+                    control={
+                        <Switch
+                            value="btn_state"
+                            color="secondary"
+                            checked={btn.state}
+                            onChange={this.handleEdit('state')}
+                        />
+                    }
+                    label="Estado"
+                    style={{margin: 10}}
+                />
+            </form>
+        );      
+    }
+
+    render() {        
         return(
             <div>
                 <Button variant='raised' size="medium" color="primary" style={{margin: 5}} onClick={this.handleClickOpen}>
@@ -243,21 +327,23 @@ class EditBtn extends Component {
                             <FormControl style={styles.formControl}>
                                 <InputLabel>Botão</InputLabel>
                                 <Select
-                                    value={this.state.btn}
-                                    onChange={this.handleChange('btn')}
+                                    value={this.state.label}
+                                    onChange={this.handleChange('label')}
                                     input={<Input id="editar_btn" />}
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
+                                    <MenuItem value=""> <em>None</em> </MenuItem>
+
                                     {this.props.btns.map( btn => {
                                         return(
                                             <MenuItem key={btn.key} value={btn.key}>{btn.name}</MenuItem>
                                         );
                                     })}
+
                                 </Select>
                             </FormControl> 
                         </form>
+
+                        {(this.state.btn !== '') && this.editForm(this.state.btn) }
                     </DialogContent>
 
                     <DialogActions>
@@ -265,7 +351,7 @@ class EditBtn extends Component {
                             Cancel
                         </Button>
 
-                        <Button onClick={this.handleClose} color="primary">
+                        <Button onClick={this.handleUpdate} color="primary">
                             Ok
                         </Button>
                     </DialogActions>
@@ -280,6 +366,7 @@ class KeyboardCard extends Component {
         super(props);
 
         this.state = {
+            show: this.props.view,
             btns: []
         }
     }
@@ -291,7 +378,15 @@ class KeyboardCard extends Component {
         this.setState({ btns: updateBtns });
     };
 
-    handleKetboardSwitch = btn => {
+    updateBtn = btn => {
+        let updateBtns = this.state.btns.slice();
+        updateBtns[btn.key] = btn;
+
+        this.setState({btns: updateBtns});
+        
+    };
+
+    handleKeyboardSwitch = btn => {
         let updateBtns = this.state.btns.slice();
         updateBtns[btn.key] = {...btn, state: !btn.state};
 
@@ -299,75 +394,125 @@ class KeyboardCard extends Component {
        
     };
 
+    handleHide = card => {
+        let update = !this.state.show;
+        this.setState({ show: update }); 
+        this.props.callback(card);
+    };
+
+    handleSave = (btns) => {
+        console.log('Save keyboard: ', btns);
+        
+    };
+
+    componentWillReceiveProps(update) {  
+        let show = update.show;             
+        this.setState({ show });      
+    }
+
     render() {
+        if(!this.state.show){
+            return null;
+        }
         return(
-            <Card>
-                <CardHeader 
-                    title="Keyboard"
-                    action={
-                        <IconButton>
-                            <VisibilityOff />
-                        </IconButton>
-                    }
-                />
-                
-                <CardContent>
-                    <FormControl component="fieldset">
-                        <FormGroup>
-                            {this.state.btns.map( btn => {
-                                return(
-                                    <FormControlLabel
-                                        key={btn.key}
-                                        control={
-                                        <Switch
-                                            checked={btn.state}
-                                            pin={btn.pin}
-                                            onChange={() => this.handleKetboardSwitch(btn) }
-                                        />
-                                        }
-                                        label={btn.name}
-                                        />
-                                );
-                            })}
-                        </FormGroup>
-                    </FormControl>
-                </CardContent>
+            <Grid item xs>
+                <Card>
+                    <CardHeader 
+                        title="Keyboard"
+                        action={
+                            <IconButton>
+                                <VisibilityOff  onClick={() => this.handleHide('keyboard')} />
+                            </IconButton>
+                        }
+                    />
+                    
+                    <CardContent>
+                        <FormControl component="fieldset">
+                            <FormGroup>
+                                {this.state.btns.map( btn => {
+                                    return(
+                                        <FormControlLabel
+                                            key={btn.key}
+                                            control={
+                                            <Switch
+                                                checked={btn.state}
+                                                pin={btn.pin}
+                                                onChange={() => this.handleKeyboardSwitch(btn) }
+                                            />
+                                            }
+                                            label={btn.name}
+                                            />
+                                    );
+                                })}
+                            </FormGroup>
+                        </FormControl>
+                    </CardContent>
 
-                <CardActions>
-                    <EditBtn btns={this.state.btns}/>
-                    <AddBtn callback={this.insertBtn}/>
-                </CardActions>
+                    <CardActions>
+                        <EditBtn btns={this.state.btns} callback={this.updateBtn}/>
+                        <AddBtn callback={this.insertBtn}/>
+                        <Button 
+                            variant='raised' 
+                            size="medium" 
+                            color="primary" 
+                            style={{margin: 5}} 
+                            onClick={() => this.handleSave(this.state.btns)} 
+                        >
+                            Save
+                        </Button>
+                    </CardActions>
 
-            </Card>
+                </Card>
+            </Grid>
         );
     }
 }
 
 class GraphCard extends Component {
-    render() {
-        return(
-            <Card>
-                <CardHeader 
-                    title="Gráfico" 
-                    action={
-                        <IconButton>
-                            <VisibilityOff />
-                        </IconButton>
-                    }
-                />
+    state = {
+        show: this.props.view
+    };
 
-                <CardContent>
-                    <Typography component="p">
-                        Placeholder
-                    </Typography>
-                </CardContent>
-                
-                <CardActions>
-                    <Button variant='raised' size="medium" color="primary">
-                        Action
-                    </Button>
-                </CardActions>
-            </Card>
+    handleHide = card => {
+        let update = !this.state.show;
+        this.setState({ show: update }); 
+        this.props.callback(card);
+    };
+
+    componentWillReceiveProps(update) {  
+        let show = update.show;             
+        this.setState({ show });      
+    }
+
+    render() {
+        if(!this.state.show){
+            return null;
+        }
+        return(
+            <Grid item xs>
+                <Card>
+                    <CardHeader 
+                        title="Gráfico" 
+                        action={
+                            <IconButton>
+                               <VisibilityOff  onClick={() => this.handleHide('graph')} />
+                            </IconButton>
+                        }
+                    />
+
+                    <CardContent>
+                        <Typography component="p">
+                            Placeholder
+                        </Typography>
+                    </CardContent>
+                    
+                    <CardActions>
+                        <Button variant='raised' size="medium" color="primary">
+                            Action
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Grid>
         );
     }
 }
