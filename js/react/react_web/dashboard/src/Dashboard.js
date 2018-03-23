@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Button, Menu, MenuItem, Grid } from 'material-ui';
 import AddIcon from 'material-ui-icons/Add';
-import { KeyboardCard, ChatCard, GraphCard } from './components/Cards';
+import { KeyboardCard, ChatCard, GraphCard, ReqCard } from './components/cards';
 
 class Fab extends Component {
     state = {
@@ -58,7 +58,7 @@ export default class Dashboard extends Component {
         this.state = {
             chat: true,
             keyboard: true, 
-            graph: true
+            graph: false
         };
     }
 
@@ -88,8 +88,10 @@ export default class Dashboard extends Component {
                 <ChatCard show={this.state.chat} callback={this.hideCallback}/>
 
                 <KeyboardCard show={this.state.keyboard} callback={this.hideCallback} />
-            
+                
                 <GraphCard show={this.state.graph} callback={this.hideCallback} />
+
+                <ReqCard />
             
                 <Fab callback={this.addCard}/>
             </Grid>

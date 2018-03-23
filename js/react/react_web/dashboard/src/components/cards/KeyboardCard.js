@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
-import { Button, IconButton, Typography, TextField, Switch, FormControlLabel, FormControl, FormGroup, InputLabel, Select, Input, Dialog, DialogTitle, DialogContent, MenuItem, DialogActions, Grid } from 'material-ui';
+import { Button, IconButton, Switch, FormControlLabel, FormControl, FormGroup, InputLabel, Select, Input, Dialog, DialogTitle, DialogContent, MenuItem, DialogActions, Grid } from 'material-ui';
 
-import { VisibilityOff, Send } from 'material-ui-icons';
+import { VisibilityOff } from 'material-ui-icons';
 
 const styles = ({
     root: {
@@ -15,79 +15,6 @@ const styles = ({
         padding: 5
     }
 });
-  
-class ChatCard extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            show: this.props.view,
-            msg: ''
-        }
-    }
-
-    handleMsg = name => event => {
-        this.setState({ [name]: event.target.value });      
-    };
-
-    handleSend = () => {
-        if(this.state.msg.length > 0){
-            console.log(this.state.msg);
-            this.setState({msg: ''})
-        }
-    };
-
-    handleHide = card => {
-        let update = !this.state.show;
-        this.setState({ show: update }); 
-        this.props.callback(card);
-    };
-
-    componentWillReceiveProps(update) {  
-        let show = update.show;             
-        this.setState({ show });      
-    }
-
-    render() {
-        if(!this.state.show){
-            return null;
-        }
-        return(
-            <Grid item xs={4}>
-                <Card>
-                    <CardHeader 
-                        title="Chat" 
-                        action={
-                            <IconButton>
-                                <VisibilityOff onClick={() => this.handleHide('chat')} />
-                            </IconButton>
-                        }
-                    />
-                    <CardContent>
-                        <form>
-                            <TextField
-                                id="msg"
-                                label="Insira uma mensagem"
-                                value={this.state.msg}
-                                onChange={this.handleMsg('msg')}
-                            />
-                            <Button onClick={this.handleSend} variant="raised" size="small" color="secondary" style={{marginLeft: 10}}>
-                                Send
-                                <Send/>
-                            </Button>
-                        </form>
-                    </CardContent>
-                    
-                    <CardActions>
-                        <Button variant='raised' size="medium" color="primary">
-                            Action
-                        </Button>
-                    </CardActions>
-                </Card>
-            </Grid>
-        );
-    }
-}
 
 class AddBtn extends Component {
     constructor(props) {
@@ -95,6 +22,7 @@ class AddBtn extends Component {
 
         this.state = {
             open: false,
+            a_pins: [1, 2, 3],
             btn_pin: '',
             btn_name: '',
             btn_state: false
@@ -126,12 +54,16 @@ class AddBtn extends Component {
             state: this.state.btn_state
         });
         
+        // Remove o pino do butão criado dos pinos disponiveis 
+        let left_pins = this.state.a_pins.slice();
+        left_pins.splice( left_pins.indexOf(this.state.btn_pin), 1);
+
         this.setState({
-            open: false,  
+            open: false, 
+            a_pins: left_pins, 
             btn_pin: '',
             btn_name: '',
             btn_state: false
-            
         });
     }
   
@@ -170,9 +102,13 @@ class AddBtn extends Component {
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                <MenuItem value={1}>1</MenuItem>
-                                <MenuItem value={2}>2</MenuItem>
-                                <MenuItem value={3}>3</MenuItem>
+
+                                {this.state.a_pins.map(pin => {
+                                    return(
+                                        <MenuItem key={pin} value={pin}>{pin}</MenuItem>
+                                    );
+                                })}
+
                             </Select>
                         </FormControl>
 
@@ -361,7 +297,7 @@ class EditBtn extends Component {
     }
 }
   
-class KeyboardCard extends Component {
+export default class KeyboardCard extends Component {
     constructor(props) {
         super(props);
 
@@ -449,8 +385,8 @@ class KeyboardCard extends Component {
                     </CardContent>
 
                     <CardActions>
-                        <EditBtn btns={this.state.btns} callback={this.updateBtn}/>
                         <AddBtn callback={this.insertBtn}/>
+                        <EditBtn btns={this.state.btns} callback={this.updateBtn}/>
                         <Button 
                             variant='raised' 
                             size="medium" 
@@ -467,58 +403,3 @@ class KeyboardCard extends Component {
         );
     }
 }
-
-class GraphCard extends Component {
-    state = {
-        show: this.props.view
-    };
-
-    handleHide = card => {
-        let update = !this.state.show;
-        this.setState({ show: update }); 
-        this.props.callback(card);
-    };
-
-    componentWillReceiveProps(update) {  
-        let show = update.show;             
-        this.setState({ show });      
-    }
-
-    render() {
-        if(!this.state.show){
-            return null;
-        }
-        return(
-            <Grid item xs>
-                <Card>
-                    <CardHeader 
-                        title="Gráfico" 
-                        action={
-                            <IconButton>
-                               <VisibilityOff  onClick={() => this.handleHide('graph')} />
-                            </IconButton>
-                        }
-                    />
-
-                    <CardContent>
-                        <Typography component="p">
-                            Placeholder
-                        </Typography>
-                    </CardContent>
-                    
-                    <CardActions>
-                        <Button variant='raised' size="medium" color="primary">
-                            Action
-                        </Button>
-                    </CardActions>
-                </Card>
-            </Grid>
-        );
-    }
-}
-
-export { 
-    KeyboardCard,
-    ChatCard,
-    GraphCard
-};

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "admin-on-rest": "^1.4.0",
+    "axios": "^0.18.0",
     "material-ui": "^1.0.0-beta.35",
     "material-ui-icons": "^1.0.0-beta.35",
     "react": "^16.2.0",
