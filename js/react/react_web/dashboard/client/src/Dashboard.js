@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Button, Menu, MenuItem, Grid } from 'material-ui';
 import AddIcon from 'material-ui-icons/Add';
-import { KeyboardCard, ChatCard, GraphCard, ReqCard } from './components/cards';
+import { KeyboardCard, ChatCard, GraphCard } from './components/cards';
 
 import { open_room, getPins } from './api'
 
@@ -97,8 +97,6 @@ export default class Dashboard extends Component {
                 <KeyboardCard show={this.state.keyboard} callback={this.hideCallback} />
                 
                 <GraphCard show={this.state.graph} callback={this.hideCallback} />
-
-                <ReqCard />
             
                 <Fab callback={this.addCard}/>
             </Grid>

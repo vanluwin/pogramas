@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import Card, { CardHeader, CardContent } from 'material-ui/Card';
 import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import { Button, IconButton, TextField, Grid, Typography, Chip } from 'material-ui';
+import { Button, IconButton, TextField, Grid, Typography } from 'material-ui';
 
 import { ChatFeed, Message } from 'react-chat-ui';
 
-import { VisibilityOff, Send, ExpandMore, Delete, Face, DeviceHub } from 'material-ui-icons';
+import { VisibilityOff, Send, ExpandMore } from 'material-ui-icons';
 
 import { sendMsg } from '../../api'
 
@@ -31,8 +30,6 @@ export default class ChatCard extends Component {
     handleSend = () => {
         let msg = this.state.msg;
         if(msg.length > 0){
-            console.log(msg);
-
             //Evia ao socket
             sendMsg(msg);
 
@@ -67,7 +64,7 @@ export default class ChatCard extends Component {
             return null;
         }
         return(
-            <Grid item xs={4}>
+            <Grid item xs>
                 <Card>
                     <CardHeader 
                         title="Chat" 
