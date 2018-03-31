@@ -14,8 +14,13 @@ function getPins() {
     socket.emit('get_pins');
 }
 
+function saveKeyboard(keyboard) {
+    socket.emit('save_keyboard', keyboard);
+}
+
 export {
     open_room,
     sendMsg,
-    getPins
+    getPins,
+    saveKeyboard
 };

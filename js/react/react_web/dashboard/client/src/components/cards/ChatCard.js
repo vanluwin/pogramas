@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
-import { Button, IconButton, TextField, Grid } from 'material-ui';
+import Card, { CardHeader, CardContent } from 'material-ui/Card';
+import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import { Button, IconButton, TextField, Grid, Typography, Chip } from 'material-ui';
 
-import { VisibilityOff, Send } from 'material-ui-icons';
+import { ChatFeed, Message } from 'react-chat-ui';
+
+import { VisibilityOff, Send, ExpandMore, Delete, Face, DeviceHub } from 'material-ui-icons';
 
 import { sendMsg } from '../../api'
 
@@ -12,7 +16,8 @@ export default class ChatCard extends Component {
 
         this.state = {
             show: this.props.view,
-            msg: ''
+            msg: '',
+            log: []
         }
     }
 
@@ -21,13 +26,19 @@ export default class ChatCard extends Component {
     };
 
     handleSend = () => {
-        if(this.state.msg.length > 0){
-            console.log(this.state.msg);
+        let msg = this.state.msg;
+        if(msg.length > 0){
+            console.log(msg);
 
             //Evia ao socket
-            sendMsg(this.state.msg);
+            sendMsg(msg);
 
-            this.setState({msg: ''})
+            //Deixa a mensagem salva no log 
+            let log = this.state.log.slice();
+            log.push({author: 'You', txt: msg})
+            this.setState({ log })
+
+            this.setState({ msg: '' });
         }
     };
 
@@ -56,7 +67,8 @@ export default class ChatCard extends Component {
                                 <VisibilityOff onClick={() => this.handleHide('chat')} />
                             </IconButton>
                         }
-                    />
+                    /> 
+
                     <CardContent>
                         <form>
                             <TextField
@@ -71,12 +83,34 @@ export default class ChatCard extends Component {
                             </Button>
                         </form>
                     </CardContent>
-                    
-                    <CardActions>
-                        <Button variant='raised' size="medium" color="primary">
-                            Action
-                        </Button>
-                    </CardActions>
+
+                    <CardContent>
+                        <ExpansionPanel>
+
+                            <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+                                <Typography>Chat log</Typography>
+                            </ExpansionPanelSummary>
+
+                            <ExpansionPanelDetails>
+                                <List>
+                                    {this.state.log.map( entry => {
+                                        return(
+                                            <ListItem key={ this.state.log.indexOf(entry) } dense>
+                                                <ListItemIcon>
+                                                    {entry.author === 'You' ? <Face/> : <DeviceHub/>}
+                                                </ListItemIcon>
+                                                <ListItemText primary={<Chip label={entry.txt}/>}/>
+                                                <IconButton aria-label="Delete">
+                                                    <Delete/>
+                                                </IconButton>
+                                            </ListItem>                                            
+                                        );
+                                    })}
+                                </List>
+                            </ExpansionPanelDetails>
+
+                        </ExpansionPanel>
+                    </CardContent>
                 </Card>
             </Grid>
         );

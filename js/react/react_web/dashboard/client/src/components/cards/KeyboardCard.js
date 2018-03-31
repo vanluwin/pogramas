@@ -4,6 +4,8 @@ import { Button, IconButton, Switch, FormControlLabel, FormControl, FormGroup, I
 
 import { VisibilityOff } from 'material-ui-icons';
 
+import { saveKeyboard } from '../../api';
+
 const styles = ({
     root: {
         display: 'flex',
@@ -337,8 +339,7 @@ export default class KeyboardCard extends Component {
     };
 
     handleSave = (btns) => {
-        console.log('Save keyboard: ', btns);
-        
+        saveKeyboard(btns);
     };
 
     componentWillReceiveProps(update) {  
