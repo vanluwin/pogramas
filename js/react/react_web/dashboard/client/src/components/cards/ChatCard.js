@@ -17,7 +17,10 @@ export default class ChatCard extends Component {
         this.state = {
             show: this.props.view,
             msg: '',
-            log: []
+            log: [
+                new Message({ id: 1, message: "Thing messages", senderName: 'Thing' }), 
+                new Message({ id: 0, message: "Your messages" })
+            ]
         }
     }
 
@@ -35,7 +38,13 @@ export default class ChatCard extends Component {
 
             //Deixa a mensagem salva no log 
             let log = this.state.log.slice();
-            log.push({author: 'You', txt: msg})
+            log.push(
+                new Message({
+                    id: 0,
+                    message: msg,
+                    senderName: 'You'
+                })
+            );
             this.setState({ log })
 
             this.setState({ msg: '' });
@@ -92,21 +101,11 @@ export default class ChatCard extends Component {
                             </ExpansionPanelSummary>
 
                             <ExpansionPanelDetails>
-                                <List>
-                                    {this.state.log.map( entry => {
-                                        return(
-                                            <ListItem key={ this.state.log.indexOf(entry) } dense>
-                                                <ListItemIcon>
-                                                    {entry.author === 'You' ? <Face/> : <DeviceHub/>}
-                                                </ListItemIcon>
-                                                <ListItemText primary={<Chip label={entry.txt}/>}/>
-                                                <IconButton aria-label="Delete">
-                                                    <Delete/>
-                                                </IconButton>
-                                            </ListItem>                                            
-                                        );
-                                    })}
-                                </List>
+                                <ChatFeed
+                                    messages={this.state.log} // Boolean: list of message objects
+                                    hasInputField={false} // Boolean: use our input, or use your own
+                                    showSenderName // show the name of the user who sent the message
+                                />
                             </ExpansionPanelDetails>
 
                         </ExpansionPanel>
