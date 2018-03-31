@@ -3,7 +3,7 @@ import {Button, Menu, MenuItem, Grid } from 'material-ui';
 import AddIcon from 'material-ui-icons/Add';
 import { KeyboardCard, ChatCard, GraphCard, ReqCard } from './components/cards';
 
-import { open_room, enviarMsg, getPins } from './api'
+import { open_room, getPins } from './api'
 
 class Fab extends Component {
     state = {
@@ -85,7 +85,6 @@ export default class Dashboard extends Component {
 
     componentWillMount() {
         open_room('Sala do Richard');
-        enviarMsg('Deu bom');
         getPins();
     }
 

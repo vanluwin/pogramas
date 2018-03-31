@@ -6,7 +6,7 @@ function open_room(key) {
     socket.emit('open_room', key);
 }
 
-function enviarMsg(msg) {
+function sendMsg(msg) {
     socket.emit('message', msg);
 }
 
@@ -16,6 +16,6 @@ function getPins() {
 
 export {
     open_room,
-    enviarMsg,
+    sendMsg,
     getPins
 };

@@ -4,6 +4,8 @@ import { Button, IconButton, TextField, Grid } from 'material-ui';
 
 import { VisibilityOff, Send } from 'material-ui-icons';
 
+import { sendMsg } from '../../api'
+
 export default class ChatCard extends Component {
     constructor(props) {
         super(props);
@@ -21,6 +23,10 @@ export default class ChatCard extends Component {
     handleSend = () => {
         if(this.state.msg.length > 0){
             console.log(this.state.msg);
+
+            //Evia ao socket
+            sendMsg(this.state.msg);
+
             this.setState({msg: ''})
         }
     };

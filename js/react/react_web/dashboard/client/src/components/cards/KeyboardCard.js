@@ -71,7 +71,7 @@ class AddBtn extends Component {
       return (
         <div>
             <Button variant='raised' size="medium" color="primary" onClick={this.handleClickOpen}>
-                Add Button
+                Add
             </Button>
 
             <Dialog

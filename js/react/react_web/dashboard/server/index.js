@@ -1,13 +1,21 @@
-
 const io = require('socket.io')();
 
 io.on('connection', (client) => {
-  client.on('subscribeToTimer', (interval) => {
-    console.log('client is subscribing to timer with interval ', interval);
-    setInterval(() => {
-      client.emit('timer', new Date());
-    }, interval);
+
+  client.on('open_room', key => {
+    console.log(`Open new room with ID='${key}'`);
   });
+  
+  client.on('message', msg => {
+    console.log(`Recived: '${msg}'`);
+  })
+
+  client.on('get_pins', pins => {
+    let a_pins = [1, 2, 3, 4, 5];
+    console.log(`Available pins: ${a_pins}`);
+
+  })
+
 });
 
 const port = 8000;
